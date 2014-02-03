@@ -20,8 +20,8 @@ namespace HeatGeneration
             laneCount = 4;
             raceCount = 4;
 
-            racers = GetRacers();
-            lookup = GetRacers();
+            racers = Helpers.RacerGen.GetRacers();
+            lookup = Helpers.RacerGen.GetRacers();
             int totalHeats = HeatCount.CalculateHeatCount(laneCount, racers.Count, raceCount);
 
             Console.WriteLine("Total racers: " + racers.Count());
@@ -72,7 +72,7 @@ namespace HeatGeneration
         {
             var lineUp = new List<Lane>();
             List<Contestant> previousHeat = usedContestants.Where(x => x.HeatId == (heatId - 1)).ToList();
-            var lanes = GetLanes();
+            var lanes = Helpers.LaneGen.GetLanes(laneCount);
 
             // If this is the first heat, just load the top 4 racers and return
             if (!previousHeat.Any())
@@ -149,28 +149,6 @@ namespace HeatGeneration
                 RacerId = _racer.Id
             });
             return new Lane() { RacerId = _racer.Id, LaneNumber = lane };
-        }
-
-        private static ICollection<int> GetLanes()
-        {
-            ICollection<int> lanes = new Collection<int>();
-            for (int i = 1; i <= laneCount; i++)
-            {
-                lanes.Add(i);
-            }
-            return lanes;
-        }
-
-        public static List<Racer> GetRacers()
-        {
-            var racers = new List<Racer>();
-            racers.Add(new Racer() { Id = 1, Name = "aaaa" });
-            racers.Add(new Racer() { Id = 2, Name = "bbbb" });
-            racers.Add(new Racer() { Id = 3, Name = "cccc" });
-            racers.Add(new Racer() { Id = 4, Name = "dddd" });
-            racers.Add(new Racer() { Id = 5, Name = "eeee" });
-
-            return racers;
         }
     }
 }

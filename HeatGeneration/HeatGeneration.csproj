@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\LaneGen.cs" />
+    <Compile Include="Helpers\RacerGen.cs" />
     <Compile Include="Models\Contestant.cs" />
     <Compile Include="Models\Heat.cs" />
     <Compile Include="Helpers\HeatCount.cs" />
