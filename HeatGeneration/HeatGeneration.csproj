@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Helpers\LaneGen.cs" />
     <Compile Include="Helpers\RacerGen.cs" />
     <Compile Include="Models\Contestant.cs" />
