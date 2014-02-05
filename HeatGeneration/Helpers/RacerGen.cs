@@ -15,8 +15,9 @@ namespace HeatGeneration.Helpers
             racers.Add(new Racer() { Id = 1, Name = "aaaa" });
             racers.Add(new Racer() { Id = 2, Name = "bbbb" });
             racers.Add(new Racer() { Id = 3, Name = "cccc" });
-            racers.Add(new Racer() { Id = 4, Name = "dddd" });
-            racers.Add(new Racer() { Id = 5, Name = "eeee" });
+            //racers.Add(new Racer() { Id = 4, Name = "dddd" });
+            //racers.Add(new Racer() { Id = 5, Name = "eeee" });
+            //racers.Add(new Racer() { Id = 6, Name = "ffff" });
 
             return racers;
         }

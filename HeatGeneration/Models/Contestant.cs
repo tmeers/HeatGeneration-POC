@@ -6,5 +6,6 @@
         public string Car { get; set; }
         public int RacerId { get; set; }
         public int Lane { get; set; }
+        public int Place { get; set; }
     }
 }

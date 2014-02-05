@@ -22,16 +22,17 @@ namespace HeatGeneration
 
             racers = Helpers.RacerGen.GetRacers();
             lookup = Helpers.RacerGen.GetRacers();
-            int totalHeats = HeatCount.CalculateHeatCount(laneCount, racers.Count, raceCount);
+            heatCount = HeatCount.CalculateHeatCount(laneCount, racers.Count, raceCount);
 
             Console.WriteLine("Total racers: " + racers.Count());
             Console.WriteLine("Total lanes: " + laneCount);
-            Console.WriteLine("Total heats: " + totalHeats);
+            Console.WriteLine("Total heats: " + heatCount);
 
             List<Heat> Heats = new List<Heat>();
             ICollection<int> lanes = new Collection<int>();
             int heatId = 1;
-            for (int i = 0; i <= (totalHeats - 1); i++)
+
+            for (int i = 0; i <= (heatCount - 1); i++)
             {
                 ICollection<Lane> usedLanes = new Collection<Lane>();
                 var heat = new Heat();
@@ -58,6 +59,7 @@ namespace HeatGeneration
                 var _heat = heat;
                 Console.WriteLine("Id: " + _heat.Id);
                 Console.WriteLine("-------");
+
                 foreach (var racer in _heat.Contestants)
                 {
                     Console.WriteLine(racer.Lane + ": " + racer.Car);
@@ -68,19 +70,17 @@ namespace HeatGeneration
             Console.ReadKey();
         }
 
-        private static List<Lane> FillLineup(List<Racer> allRacers, int heatId)
+        private static List<Lane> LoadFirstHeat(List<Lane> lineUp, List<Racer> allRacers, ICollection<int> lanes, int heatId)
         {
-            var lineUp = new List<Lane>();
-            List<Contestant> previousHeat = usedContestants.Where(x => x.HeatId == (heatId - 1)).ToList();
-            var lanes = Helpers.LaneGen.GetLanes(laneCount);
-
-            allRacers.Shuffle();
             // If this is the first heat, just load the top 4 racers and return
-            if (!previousHeat.Any())
-            {
+            //if (!previousHeat.Any())
+            //{
                 List<Racer> topN = allRacers.Take(laneCount).ToList();
                 foreach (var lane in lanes)
                 {
+                    if (!topN.Any())
+                        continue; 
+
                     var _racer = topN.Take(1).First();
                     lineUp.Add(LoadLane(_racer, lane, heatId));
                     allRacers.Remove(_racer);
@@ -88,8 +88,12 @@ namespace HeatGeneration
                 }
 
                 return lineUp;
-            }
+            //}
+        }
 
+
+        private static List<Lane> LoadNextHeat(List<Contestant> previousHeat, List<Lane> lineUp, List<Racer> allRacers, ICollection<int> lanes, int heatId)
+        {
             //// If this is the second heat, use the remaining racers first
             List<Racer> previous = new List<Racer>();
             foreach (var _last in previousHeat)
@@ -98,7 +102,54 @@ namespace HeatGeneration
             }
 
             List<Racer> leftOver = allRacers.Where(r => previous.All(c => c.Id != r.Id)).ToList();
-            List<Racer> topNLeftOver = leftOver.OrderBy(x => x.Id).ToList();
+            List<Racer> remainingRacers = new List<Racer>();
+            remainingRacers.AddRange(allRacers.Where(r => leftOver.All(c => c.Id != r.Id)).ToList());
+
+            //List<Racer> topNRacers = new List<Racer>();
+            remainingRacers.Shuffle();
+            while (leftOver.Count < laneCount)
+            {
+                foreach (var racer in remainingRacers)
+                {
+                    var previousRaces = usedContestants.Where(x => x.RacerId == racer.Id).OrderBy(x => x.Lane).ToList();
+                    if (previousRaces.Count() == (heatCount - 1))
+                    {
+                        continue;
+                    }
+                    leftOver.Add(racer);
+                }
+            }
+
+            leftOver.Shuffle();
+            foreach (var lane in lanes)
+            {
+                var _racer = leftOver.Take(1).First();
+
+                if (lineUp.Any(x => x.RacerId == _racer.Id))
+                    continue;
+
+                lineUp.Add(LoadLane(_racer, lane, heatId));
+                allRacers.Remove(_racer);
+                leftOver.Remove(_racer);
+            }
+
+            return lineUp;
+        } 
+
+        private static List<Lane> FillLineup(List<Racer> allRacers, int heatId)
+        {
+            var lineUp = new List<Lane>();
+            List<Contestant> previousHeat = usedContestants.Where(x => x.HeatId == (heatId - 1)).OrderBy(x => x.Lane).ToList();
+            var lanes = Helpers.LaneGen.GetLanes(laneCount);
+
+            
+            if (!usedContestants.Any())
+            {
+                return LoadFirstHeat(lineUp, allRacers, lanes, heatId);
+            }
+            //allRacers.Shuffle();
+
+            return LoadNextHeat(previousHeat, lineUp, allRacers, lanes, heatId);
 
             //while (leftOver.Count < laneCount)
             //{
@@ -123,7 +174,7 @@ namespace HeatGeneration
             //}
 
             //CleanupAllRacers();
-            return lineUp;
+            //return lineUp;
         }
 
         private static void CleanupAllRacers()
