@@ -61,6 +61,7 @@ Following the rules for a ["Chaotic-Rotation Method"](http://www.rahul.net/mcgre
     - Heats should build following above rules until all racers have competed the required number of times
 
 ###Example Data###
+####4 Lanes, 5 Racers####
 |           | Heat 1    | Heat 2    | Heat 3    | Heat 4    | Heat 5    
 | --------- | --------- | --------- | --------- | --------- | --------- 
 | Lane 1    | aaaa      | eeee      | dddd      | cccc      | bbbb
@@ -69,7 +70,15 @@ Following the rules for a ["Chaotic-Rotation Method"](http://www.rahul.net/mcgre
 | Lane 4    | dddd      | cccc      | bbbb      | aaaa      | eeee
 | 
 | BYE       | eeee      | dddd      | cccc      | bbbb      | aaaa
-
+####4 Lanes, 3 Racers####
+|           | Heat 1    | Heat 2    | Heat 3    | Heat 4    
+| --------- | --------- | --------- | --------- | --------- 
+| Lane 1    | aaaa      |           | cccc      | bbbb      
+| Lane 2    | bbbb      | aaaa      |           | cccc      
+| Lane 3    | cccc      | bbbb      | aaaa      |           
+| Lane 4    |           | cccc      | bbbb      | aaaa      
+| 
+| BYE       |           |           |           |       
 ####Additional assumptions for 4 lanes####
 With 4 lanes and 5 racers there should be 5 heats and each should have all 4 lanes filled, and **one** racer with a BYE for each heat. That racer should be in the next heat. 
 
