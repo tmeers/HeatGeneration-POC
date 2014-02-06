@@ -1,7 +1,7 @@
 Heat Generation - POC
 ==================
 
-Proof of Concept code for generating heats for a Pinewood Derby
+Proof of Concept code for generating heats for a Pinewood Derby. The idea here is to put together a working system to place into my [Derby](https://github.com/tmeers/Derby) application. This will be what generates the heats in the back end and makes the competitions run. The classes in the POC are as close to the actual derby code as I can get without actually loading or saving data to a database. It also takes out some small properties that are just fluff in the overall scope of the heats (car weight, number, and points). 
 
 This ties in with [my thoughts on a gist](https://gist.github.com/tmeers/8701826). Hoping to make this more clear to figure out. 
 
@@ -81,6 +81,7 @@ Following the rules for a ["Chaotic-Rotation Method"](http://www.rahul.net/mcgre
 | Lane 4    |           | cccc      | bbbb      | aaaa      
 | 
 | BYE       |           |           |           |       
+
 ####Additional assumptions for 4 lanes####
 With 4 lanes and 5 racers there should be 5 heats and each should have all 4 lanes filled, and **one** racer with a BYE for each heat. That racer should be in the next heat. 
 
@@ -91,3 +92,21 @@ With 4 lanes and 7 racers there should be 8 heats and each should have all 4 lan
 With 4 lanes and 8 racers there should be 8 heats and each should have all 4 lanes filled, and **no** racer with a BYE for each heat. 
 
 With 4 lanes and 9 racers there should be 9 heats and each should have all 4 lanes filled, and **one** racer with a BYE for each heat. That racer should be in the next heat. 
+
+###Heat Count Assumptions###
+Things get complicated with figuring out 6 lane races and may need to be preset based on number of racers. Rounding things out to even numbers helps. 
+
+Here are some assumptions for Heat Counts (All lanes used unless otherwise marked)
+
+|            |   2  |   3  |   4  |   5   |   6  |   7  |   8  |   9  |  10  |  11  |  12  |  13  |  14  |
+| ---------- | ---- | ---- | ---- | ----- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| Lanes: 3   |      |   3  |      |  10   |   6  |   7  |   8  |   9  |  10  |  11  |  12  |  13  |  15  |
+| Lanes used |      |      |      |  ac   |      |      |      |      |      |      |      |      |      |
+|            |      |      |      |       |      |      |      |      |      |      |      |      |      |
+| Lanes: 4   |      |   4  |   4  |   5   |   6  |   8  |   8  |   9  |  10  |  11  |  12  |  13  |  14  |
+| Lanes used |      |      |      |       |      |      |      |      |      |      |      |      |      |
+|            |      |      |      |       |      |      |      |      |      |      |      |      |      |
+| Lanes: 6   |      |      |   4  |   5   |   6  |   7  |   9  |   9  |  10  |  12  |  12  |  15  |  16  |
+| Lanes used |      |      | abcd | abcde |      |      |      |      |      |      |      |      |      |
+
+The list goes on from here if you have a large group of racers. But by deviding them up into smaller groups by Den, it becomes easier to manage. 
