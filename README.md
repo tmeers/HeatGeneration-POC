@@ -5,6 +5,8 @@ Proof of Concept code for generating heats for a Pinewood Derby. The idea here i
 
 This ties in with [my thoughts on a gist](https://gist.github.com/tmeers/8701826). Hoping to make this more clear to figure out. 
 
+I'm taking ideas and contributions to this as well. Hell I'll even cough up with some of my own money to get this solved. 
+
 Another train of thought would be to think of this as a schuduler for staff like so: 
 >####Goal: Create a random schedule of Staff####
 >Data given:  
