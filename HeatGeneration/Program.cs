@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Configuration;
 using HeatGeneration.Models;
 
 namespace HeatGeneration
@@ -22,7 +24,20 @@ namespace HeatGeneration
 
             racers = Helpers.RacerGen.GetRacers();
             lookup = Helpers.RacerGen.GetRacers();
+
             heatCount = HeatCount.CalculateHeatCount(laneCount, racers.Count, raceCount);
+
+            //if (racers.Count < laneCount)
+            while (racers.Count < laneCount)
+            {
+                var _bye = new Racer();
+                _bye.Id = -1;
+                _bye.Name = "BYE";
+                _bye.Finished = false;
+
+                racers.Add(_bye);
+                lookup.Add(_bye);
+            }
 
             Console.WriteLine("Total racers: " + racers.Count());
             Console.WriteLine("Total lanes: " + laneCount);
@@ -45,7 +60,7 @@ namespace HeatGeneration
                     var _lane = lane;
                     Contestant _contestant = new Contestant();
                     _contestant.HeatId = heat.Id;
-                    _contestant.Car = lookup.FirstOrDefault(x => x.Id == _lane.RacerId).Name;
+                    _contestant.Car = _lane.Scout.Name;//lookup.FirstOrDefault(x => x.Id == _lane.Scout.Id).Name;
                     _contestant.Lane = _lane.LaneNumber;
                     heat.Contestants.Add(_contestant);
                 }
@@ -100,32 +115,51 @@ namespace HeatGeneration
             {
                 previous.Add(lookup.FirstOrDefault(x => x.Id == _last.RacerId));
             }
+            if (previous.Any(x => x.Id == -1))
+            {
+                var _bye = new Racer();
+                _bye.Id = -1;
+                _bye.Name = "BYE";
+                _bye.Finished = false;
+                previous.Remove(_bye);
+            }
 
             List<Racer> leftOver = allRacers.Where(r => previous.All(c => c.Id != r.Id)).ToList();
             List<Racer> remainingRacers = new List<Racer>();
             remainingRacers.AddRange(allRacers.Where(r => leftOver.All(c => c.Id != r.Id)).ToList());
 
             //List<Racer> topNRacers = new List<Racer>();
-            remainingRacers.Shuffle();
+            //remainingRacers.Shuffle();
             while (leftOver.Count < laneCount)
             {
                 foreach (var racer in remainingRacers)
-                {
+                {                        
                     var previousRaces = usedContestants.Where(x => x.RacerId == racer.Id).OrderBy(x => x.Lane).ToList();
                     if (previousRaces.Count() == (heatCount - 1))
                     {
                         continue;
                     }
+
+                    if (leftOver.Any(x => x.Id == racer.Id))
+                    {
+
+                        //var _bye = new Racer(-1);
+                        //leftOver.Add(_bye);
+                        continue;
+                    }
+
+
+                    Debug.WriteLine(racer.Name);
                     leftOver.Add(racer);
                 }
             }
 
-            leftOver.Shuffle();
+            //leftOver.Shuffle();
             foreach (var lane in lanes)
             {
                 var _racer = leftOver.Take(1).First();
 
-                if (lineUp.Any(x => x.RacerId == _racer.Id))
+                if (lineUp.Any(x => x.Scout.Id == _racer.Id))
                     continue;
 
                 lineUp.Add(LoadLane(_racer, lane, heatId));
@@ -200,7 +234,7 @@ namespace HeatGeneration
                 Lane = lane,
                 RacerId = _racer.Id
             });
-            return new Lane() { RacerId = _racer.Id, LaneNumber = lane };
+            return new Lane() { Scout = _racer, LaneNumber = lane };
         }
     }
 }
