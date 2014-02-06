@@ -44,13 +44,15 @@ Following the rules for a ["Chaotic-Rotation Method"](http://www.rahul.net/mcgre
     - Id = 1, Name = "aaaa" 
     - Id = 2, Name = "bbbb" 
     - Id = 3, Name = "cccc" 
-    - Id = 3, Name = "dddd" 
-    - Id = 3, Name = "eeee" 
+    - Id = 4, Name = "dddd" 
+    - Id = 5, Name = "eeee" 
   - Number of Lanes (4 lanes is the easiest)
+    - This is a static numbe rand will not change for the lifetime of the heat generation
  
 ###Conceptual Workflow###
   - Build the list of Racers
-  - Calculate the Number of heats bassed on given, static, lane count
+  - Calculate the Number of heats bassed on this formula:  
+    __(racers * lanes) / desired number of races = heat count__
   - Loop each Heat to build list on Contestants
     - First heat should be the first N racers to fill the track
       - If there are not enough racers to fill the track, fill with an empty racer
